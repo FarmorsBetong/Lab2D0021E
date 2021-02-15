@@ -12,17 +12,23 @@ public class Run {
 		double d[] = {2,6};
 		
  		//Creates two links
- 		LossyLink link1 = new LossyLink(a, b, 0);
-		LossyLink link2 = new LossyLink(c, d, 0);
+ 		//LossyLink link1 = new LossyLink(a, b, 0);
+		//LossyLink link2 = new LossyLink(c, d, 0);
 		
-		//Link link1 = new Link();
-		//Link link2 = new Link();
+		Link link1 = new Link();
+		Link link2 = new Link();
+		
+		PoissonNode host1 = new PoissonNode(1,1,5);
 
+		
+		
+		//CBRNode host1 = new CBRNode(1,1,7);
+		CBRNode host2 = new CBRNode(2,1,5);
 		
 		// Create two end hosts that will be
 		// communicating via the router
-		Node host1 = new Node(1,1);
-		Node host2 = new Node(2,1);
+		//Node host1 = new Node(1,1);
+		//Node host2 = new Node(2,1);
 
 		//Connect links to hosts
 		host1.setPeer(link1);
@@ -41,7 +47,7 @@ public class Run {
 		// host1 will send 3 messages with time interval 5 to network 2, node 1. Sequence starts with number 1
 		host1.StartSending(2, 2, 100, 5, 1); 
 		// host2 will send 2 messages with time interval 10 to network 1, node 1. Sequence starts with number 10
-		host2.StartSending(1, 1, 100, 10, 10); 
+		host2.StartSending(1, 1, 2, 10, 10); 
 		
 		// Start the simulation engine and of we go!
 		Thread t=new Thread(SimEngine.instance());
