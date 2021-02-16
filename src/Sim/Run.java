@@ -18,8 +18,8 @@ public class Run {
 		Link link1 = new Link();
 		Link link2 = new Link();
 		
-		PoissonNode host1 = new PoissonNode(1,1,5);
-
+		//PoissonNode host1 = new PoissonNode(1,1,5);
+		GaussNode host1 = new GaussNode(1,1,0,1);
 		
 		
 		//CBRNode host1 = new CBRNode(1,1,7);
@@ -45,9 +45,9 @@ public class Run {
 		
 		// Generate some traffic
 		// host1 will send 3 messages with time interval 5 to network 2, node 1. Sequence starts with number 1
-		host1.StartSending(2, 2, 100, 5, 1); 
+		host1.StartSending(2, 2, 100, 0.5, 1);
 		// host2 will send 2 messages with time interval 10 to network 1, node 1. Sequence starts with number 10
-		host2.StartSending(1, 1, 2, 10, 10); 
+		host2.StartSending(1, 1, 2, 10, 10);
 		
 		// Start the simulation engine and of we go!
 		Thread t=new Thread(SimEngine.instance());

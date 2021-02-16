@@ -4,7 +4,7 @@ package Sim;
 public class GaussNode extends Node{
 
 	protected double _mean;
-	protected int sizeBetweenStaple;
+	protected double sizeBetweenStaple;
 	protected int std_diviation;
 	protected double x;
 
@@ -12,11 +12,11 @@ public class GaussNode extends Node{
 		super(network, node);
 		this.std_diviation = std_diviation;
 		this._mean = _mean;
-		this.x = -(std_diviation * 2);
+		this.x = -(std_diviation * 3);
 	}
 
 
-	public void StartSending(int network, int node, int number, int sizeBetweenStaple, int startSeq) {
+	public void StartSending(int network, int node, int number, double sizeBetweenStaple, int startSeq) {
 		_toNetwork = network;
 		_toHost = node;
 		_stopSendingAfter = number;
@@ -27,7 +27,9 @@ public class GaussNode extends Node{
 	}
 
 	public double calcNumberOfPackagesNB(double x){
-		return _stopSendingAfter * (Math.exp(-Math.pow((x - _mean)/std_diviation,2)/2) / (std_diviation * Math.sqrt(2 * Math.PI)));
+		double procent =  (Math.exp(-Math.pow((x - _mean)/std_diviation,2)/2) / (std_diviation * Math.sqrt(2 * Math.PI)));
+		System.out.println("Procent of packages: "+ procent);
+		return _stopSendingAfter * procent;
 	}
 
 
@@ -37,7 +39,9 @@ public class GaussNode extends Node{
 		if (ev instanceof TimerEvent)
 		{
 			if(_stopSendingAfter > _sentmsg) {
-				int packages = (int)calcNumberOfPackagesNB(x);
+				int packages = (int)Math.ceil(calcNumberOfPackagesNB(x));
+				System.out.println("Nr of packages about to be sent is :" + packages);
+				System.out.println("--------------------------------------------------------------");
 
 
 				for (int i = 0; i < packages; i++) {
@@ -46,10 +50,13 @@ public class GaussNode extends Node{
 
 					_sentmsg++;
 					send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
-					System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + thisTime);
+					System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
 					_seq++;
+
+					if(_sentmsg > _stopSendingAfter) break; //if we have sent all the packets we need to stop sending more
 				}
-				send(this, new TimerEvent(), 1);
+				x = x + sizeBetweenStaple;
+				send(this, new TimerEvent(), sizeBetweenStaple);
 			}
 		}
 
