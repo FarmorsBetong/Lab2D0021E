@@ -45,7 +45,7 @@ public class Run {
 		
 		// Generate some traffic
 		// host1 will send 3 messages with time interval 5 to network 2, node 1. Sequence starts with number 1
-		host1.StartSending(2, 2, 100, 0.5, 1);
+		host1.StartSending(2, 2, 100,10,  1);
 		// host2 will send 2 messages with time interval 10 to network 1, node 1. Sequence starts with number 10
 		host2.StartSending(1, 1, 2, 10, 10);
 		

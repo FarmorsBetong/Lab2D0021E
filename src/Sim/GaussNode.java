@@ -1,23 +1,36 @@
 package Sim;
 
 
+import java.util.ArrayList;
+
 public class GaussNode extends Node{
 
 	protected double _mean;
 	protected int std_diviation;
 	protected double x;
+	protected int index = 0;
+	protected ArrayList<Double> NB = new ArrayList<>();
 
 	public GaussNode(int network, int node, double _mean, int std_diviation) {
 		super(network, node);
 		this.std_diviation = std_diviation;
 		this._mean = _mean;
 		this.x = -(std_diviation * 2);
+		NB.add(0.0014);
+		NB.add(0.0214);
+		NB.add(0.1359);
+		NB.add(0.3413);
+		NB.add(0.3413);
+		NB.add(0.1359);
+		NB.add(0.0214);
+		NB.add(0.0014);
 	}
 
 
-	public void StartSending(int network, int node, int number, int startSeq) {
+	public void StartSending(int network, int node, int number, int time, int startSeq) {
 		_toNetwork = network;
 		_toHost = node;
+		_timeBetweenSending = time;
 		_stopSendingAfter = number;
 		_seq = startSeq;
 		send(this,new TimerEvent(),0);
@@ -37,22 +50,28 @@ public class GaussNode extends Node{
 		if (ev instanceof TimerEvent)
 		{
 			if(_stopSendingAfter > _sentmsg) {
-				int packages = (int)Math.ceil(calcNumberOfPackagesNB(x));
+				//int packages = (int)Math.ceil(calcNumberOfPackagesNB(x));
 
-				System.out.println("---------------------------------------");
-				System.out.println("Sending " + packages + " packages");
+					System.out.println(NB.get(index) * _stopSendingAfter);
+					System.out.println((int)(Math.ceil(NB.get(index) * _stopSendingAfter)));
 
-				for (int i = 0; i < packages; i++) {
+					int packages = (int)(Math.ceil(NB.get(index) * _stopSendingAfter));
+					System.out.println("---------------------------------------");
+					System.out.println("Sending " + packages + " packages");
 
-					System.out.println("Time of sending package is: " + SimEngine.getTime());
+					for (int i = 0; i < packages; i++) {
 
-					_sentmsg++;
-					send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
-					System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
-					_seq++;
-				}
-				x = x + 1.044;
-				send(this, new TimerEvent(), 1.044);
+						System.out.println("Time of sending package is: " + SimEngine.getTime());
+						_sentmsg++;
+						send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
+						System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
+						_seq++;
+					}
+					System.out.println("sent msg is : " + _sentmsg);
+					x = x + 1.0;
+					index++;
+					send(this, new TimerEvent(), _timeBetweenSending);
+
 			}
 		}
 
