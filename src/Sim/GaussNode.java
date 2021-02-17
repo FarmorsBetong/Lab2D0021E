@@ -8,6 +8,7 @@ public class GaussNode extends Node{
 	protected int std_diviation;
 	protected double x;
 	protected int index = 0;
+	//A list with values of a normal distribution
 	protected ArrayList<Double> NB = new ArrayList<Double>();
 
 	public GaussNode(int network, int node, double _mean, int std_diviation) {
@@ -26,6 +27,14 @@ public class GaussNode extends Node{
 	}
 
 
+	/**
+	 *
+	 * @param network Network id
+	 * @param node	node id
+	 * @param number number of message to be sent
+	 * @param time	time between messages
+	 * @param startSeq starting seq
+	 */
 	public void StartSending(int network, int node, int number, int time, int startSeq) {
 		_toNetwork = network;
 		_toHost = node;
@@ -36,6 +45,11 @@ public class GaussNode extends Node{
 		System.out.println("Sending start signal normal distribution");
 	}
 
+	/**
+	 *
+	 * @param x value in the normal distribution
+	 * @return the value of packes, total multiply the probability in the normal distribution
+	 */
 	public double calcNumberOfPackagesNB(double x){
 		double procent = Math.exp(- Math.pow((x - _mean)/std_diviation,2)/2) / (std_diviation * Math.sqrt(2 * Math.PI));
 		System.out.println(procent);
@@ -43,6 +57,12 @@ public class GaussNode extends Node{
 	}
 
 
+	/**
+	 * Calculates the number of packages to be sent, sends them at the same time and then creates a new event that executes after _timeBetweenSending
+	 *
+	 * @param src src node
+	 * @param ev type of event
+	 */
 	// Override: Modified to send packages as a normal distribution with a random gaussian number.
 	public void recv(SimEnt src, Event ev)
 	{
