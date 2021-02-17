@@ -1,8 +1,15 @@
 package Sim;
 import java.util.ArrayList;
 
+/**
+ * Gauss generator, stores the values of the nb (probability), the mean, and the starting x value.
+ *
+ * @author Robin Olofsson, Johan Larsson, roblof-8, johlax-8
+ *
+ */
 
 public class GaussNode extends Node{
+
 
 	protected double _mean;
 	protected int std_diviation;
