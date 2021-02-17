@@ -35,7 +35,7 @@ public class CBRNode extends Node {
 					System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 					_seq++;
 					
-					if(_stopSendingAfter == _sentmsg) break; //if we have sent the total amount of packets we need to stop sending more
+					if(_stopSendingAfter >= _sentmsg) break; //if we have sent the total amount of packets we need to stop sending more
 					
 				
 				 }

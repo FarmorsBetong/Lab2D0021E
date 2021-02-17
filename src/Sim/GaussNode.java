@@ -1,7 +1,6 @@
 package Sim;
-
-
 import java.util.ArrayList;
+
 
 public class GaussNode extends Node{
 
@@ -9,7 +8,7 @@ public class GaussNode extends Node{
 	protected int std_diviation;
 	protected double x;
 	protected int index = 0;
-	protected ArrayList<Double> NB = new ArrayList<>();
+	protected ArrayList<Double> NB = new ArrayList<Double>();
 
 	public GaussNode(int network, int node, double _mean, int std_diviation) {
 		super(network, node);
@@ -66,12 +65,14 @@ public class GaussNode extends Node{
 						send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost), _seq), 0);
 						System.out.println("Node " + _id.networkId() + "." + _id.nodeId() + " sent message with seq: " + _seq + " at time " + SimEngine.getTime());
 						_seq++;
+						if(_sentmsg >= _stopSendingAfter) break;
 					}
 					System.out.println("sent msg is : " + _sentmsg);
 					x = x + 1.0;
 					index++;
 					send(this, new TimerEvent(), _timeBetweenSending);
 
+					
 			}
 		}
 

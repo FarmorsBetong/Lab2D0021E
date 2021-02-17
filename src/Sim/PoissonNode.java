@@ -51,7 +51,7 @@ public class PoissonNode extends Node{
 						System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 						_seq++;
 						
-						if(_sentmsg > _stopSendingAfter) break; //if we have sent all the packets we need to stop sending more
+						if(_sentmsg >= _stopSendingAfter) break; //if we have sent all the packets we need to stop sending more
 					}
 					//System.out.println("SENT " + Math.ceil(poissonDist(poissonIter)*_stopSendingAfter) + " PACKETS");
 					poissonIter++;
