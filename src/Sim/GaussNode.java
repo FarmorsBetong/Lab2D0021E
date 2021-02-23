@@ -51,6 +51,7 @@ public class GaussNode extends Node{
 			if(_stopSendingAfter > _sentmsg) {
 				//int packages = (int)Math.ceil(calcNumberOfPackagesNB(x));
 
+					System.out.println("THIS IS THE PERCENT OF PACKETS BEING SENT : " + NB.get(index));
 					System.out.println(NB.get(index) * _stopSendingAfter);
 					System.out.println((int)(Math.ceil(NB.get(index) * _stopSendingAfter)));
 

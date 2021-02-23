@@ -49,6 +49,16 @@ public class Router extends SimEnt{
 		return routerInterface;
 	}
 	
+	public void switchInterface(int fromInterfaceNumber, int toInterfaceNumber) {
+		
+		RouteTableEntry a = _routingTable[fromInterfaceNumber];
+		_routingTable[toInterfaceNumber] = a;
+		_routingTable[fromInterfaceNumber] = null;
+		
+		return;
+		
+	}
+	
 	
 	// When messages are received at the router this method is called
 	

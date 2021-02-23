@@ -19,16 +19,16 @@ public class Run {
 		Link link2 = new Link();
 		
 		//PoissonNode host1 = new PoissonNode(1,1,5);
-		GaussNode host1 = new GaussNode(1,1,0,1);
+		//GaussNode host1 = new GaussNode(1,1,0,1);
 		
 		
 		//CBRNode host1 = new CBRNode(1,1,7);
-		CBRNode host2 = new CBRNode(2,1,5);
+		//CBRNode host2 = new CBRNode(2,1,5);
 		
 		// Create two end hosts that will be
 		// communicating via the router
-		//Node host1 = new Node(1,1);
-		//Node host2 = new Node(2,1);
+		Node host1 = new Node(1,1);
+		Node host2 = new Node(2,1);
 
 		//Connect links to hosts
 		host1.setPeer(link1);
@@ -39,15 +39,19 @@ public class Run {
 		// the host connected to the other
 		// side of the link is also provided
 		// Note. A switch is created in same way using the Switch class
-		Router routeNode = new Router(2);
+		Router routeNode = new Router(3);
 		routeNode.connectInterface(0, link1, host1);
 		routeNode.connectInterface(1, link2, host2);
 		
 		// Generate some traffic
 		// host1 will send 3 messages with time interval 5 to network 2, node 1. Sequence starts with number 1
-		host1.StartSending(2, 2, 100,10,  1);
+		host1.StartSending(2, 2, 5,10, 1);
 		// host2 will send 2 messages with time interval 10 to network 1, node 1. Sequence starts with number 10
-		host2.StartSending(1, 1, 2, 10, 10);
+		host2.StartSending(1, 1, 1, 10, 10);
+		
+		routeNode.switchInterface(0, 2);
+		
+		//host1.StartSending(2, 2, 3, 3, 25);
 		
 		// Start the simulation engine and of we go!
 		Thread t=new Thread(SimEngine.instance());
