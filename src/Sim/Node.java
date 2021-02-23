@@ -34,7 +34,11 @@ public class Node extends SimEnt {
 	{
 		return _id;
 	}
-	
+
+	public void switchInterface(int changeInterfaceAfter, int changeInterfaceTo){
+		this.changeInterfaceAfter = changeInterfaceAfter;
+		this.changeInterfaceTo = changeInterfaceTo;
+	}
 //**********************************************************************************	
 	// Just implemented to generate some traffic for demo.
 	// In one of the labs you will create some traffic generators
@@ -42,7 +46,11 @@ public class Node extends SimEnt {
 	protected int _stopSendingAfter = 0; //messages
 	protected int _timeBetweenSending = 10; //time between messages
 	protected int _toNetwork = 0;
-	protected int _toHost = 0;
+
+	// changeInterfaceAfter holds the number of packets needs to be sent before a interface switch
+	// changeInterfaceTo holds the interface we are going to switch to.
+	protected int changeInterfaceAfter;
+	protected int changeInterfaceTo;
 	
 	public void StartSending(int network, int node, int number, int timeInterval, int startSeq)
 	{
@@ -69,6 +77,14 @@ public class Node extends SimEnt {
 				send(this, new TimerEvent(),_timeBetweenSending);
 				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 				_seq++;
+
+				if(_sentmsg == changeInterfaceAfter){
+
+					System.out.println("Switching Interface from" + );
+
+					//Creates a switchinterface event that triggers immediately.
+					send(this,new SwitchInterface(this._id,changeInterfaceTo),0);
+				}
 			}
 		}
 		if (ev instanceof Message)

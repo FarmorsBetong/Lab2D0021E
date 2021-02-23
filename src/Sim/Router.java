@@ -50,13 +50,25 @@ public class Router extends SimEnt{
 	}
 	
 	public void switchInterface(int fromInterfaceNumber, int toInterfaceNumber) {
-		
-		RouteTableEntry a = _routingTable[fromInterfaceNumber];
-		_routingTable[toInterfaceNumber] = a;
-		_routingTable[fromInterfaceNumber] = null;
-		
-		return;
-		
+
+		// Checks if the swapped interface is in range, avoid array error.
+		if( toInterfaceNumber < _interfaces){
+
+			RouteTableEntry a = _routingTable[fromInterfaceNumber];
+			_routingTable[toInterfaceNumber] = a;
+			_routingTable[fromInterfaceNumber] = null;
+		}
+		else{
+			System.out.println("Was not able to swap interface, interface range of out bounds.");
+		}
+
+	}
+
+	//prints out the table of interfaces when an changeInterface event has occurred
+	private void printInterfaceTable(){
+		for(int i = 0; i < _interfaces; i++){
+			System.out.println("Interface " + i + "have the : " + _routingTable[i]);
+		}
 	}
 	
 	
