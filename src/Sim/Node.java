@@ -46,6 +46,7 @@ public class Node extends SimEnt {
 	protected int _stopSendingAfter = 0; //messages
 	protected int _timeBetweenSending = 10; //time between messages
 	protected int _toNetwork = 0;
+	protected int _toHost = 0;
 
 	// changeInterfaceAfter holds the number of packets needs to be sent before a interface switch
 	// changeInterfaceTo holds the interface we are going to switch to.
@@ -80,7 +81,7 @@ public class Node extends SimEnt {
 
 				if(_sentmsg == changeInterfaceAfter){
 
-					System.out.println("Switching Interface from" + );
+					//System.out.println("Switching Interface from" + );
 
 					//Creates a switchinterface event that triggers immediately.
 					send(this,new SwitchInterface(this._id,changeInterfaceTo),0);

@@ -10,8 +10,8 @@ public class SwitchInterface implements Event {
         this.newInterfaceNr = newInterface;
     }
 
-    public int getOldInterfaceNr() {
-        return oldInterfaceNr;
+    public NetworkAddr getOldInterfaceNr() {
+        return currentInterface;
     }
 
     public int getNewInterfaceNr() {
