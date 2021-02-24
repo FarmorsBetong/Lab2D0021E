@@ -3,6 +3,8 @@ package Sim;
 // This class implements a node (host) it has an address, a peer that it communicates with
 // and it count messages send and received.
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+
 public class Node extends SimEnt {
 	protected NetworkAddr _id;
 	protected SimEnt _peer;
@@ -37,7 +39,7 @@ public class Node extends SimEnt {
 
 	public void switchInterface(int changeInterfaceAfter, int changeInterfaceTo){
 		this.changeInterfaceAfter = changeInterfaceAfter;
-		this.changeInterfaceTo = changeInterfaceTo;
+		this.newInterface = changeInterfaceTo;
 	}
 //**********************************************************************************	
 	// Just implemented to generate some traffic for demo.
@@ -51,7 +53,7 @@ public class Node extends SimEnt {
 	// changeInterfaceAfter holds the number of packets needs to be sent before a interface switch
 	// changeInterfaceTo holds the interface we are going to switch to.
 	protected int changeInterfaceAfter;
-	protected int changeInterfaceTo;
+	protected int newInterface;
 	
 	public void StartSending(int network, int node, int number, int timeInterval, int startSeq)
 	{
@@ -79,12 +81,14 @@ public class Node extends SimEnt {
 				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 				_seq++;
 
-				if(_sentmsg == changeInterfaceAfter){
-
-					//System.out.println("Switching Interface from" + );
+				if(_sentmsg == changeInterfaceAfter)
+				{
+					System.out.println("nop");
+					System.out.println("Switching Interface to " + newInterface);
 
 					//Creates a switchinterface event that triggers immediately.
-					send(this,new SwitchInterface(this._id,changeInterfaceTo),0);
+					System.out.println("Creates a SwitchInterface event");
+					send(_peer,new SwitchInterface(this._id,this.newInterface),0);
 				}
 			}
 		}

@@ -49,25 +49,44 @@ public class Router extends SimEnt{
 		return routerInterface;
 	}
 	
-	public void switchInterface(int fromInterfaceNumber, int toInterfaceNumber) {
+	public void switchInterface(NetworkAddr idCurrentInterface, int newInterface) {
 
-		// Checks if the swapped interface is in range, avoid array error.
-		if( toInterfaceNumber < _interfaces){
-
-			RouteTableEntry a = _routingTable[fromInterfaceNumber];
-			_routingTable[toInterfaceNumber] = a;
-			_routingTable[fromInterfaceNumber] = null;
+		// First check if the new interface spot isen't already taken
+		if(_routingTable[newInterface] != null){
+			System.out.println("This interface is already occupied");
+			return;
 		}
-		else{
-			System.out.println("Was not able to swap interface, interface range of out bounds.");
-		}
+		// Go through the list of interface and identify which node the event is switching with.
+		for ( int i  = 0; i < _interfaces; i++){
+			if(_routingTable[i] != null){
+				try{
+					if(((Node)_routingTable[i].node()).getAddr() == idCurrentInterface){
+						RouteTableEntry r = _routingTable[i];
+						_routingTable[i] = null;
+						_routingTable[newInterface] = r;
+					}
 
+				}catch(Exception e){
+					System.out.println("Null pointer ouch");
+					continue;
+				}
+
+			}
+		}
 	}
 
 	//prints out the table of interfaces when an changeInterface event has occurred
-	private void printInterfaceTable(){
+	public void printInterfaceTable(){
 		for(int i = 0; i < _interfaces; i++){
-			System.out.println("Interface " + i + "have the : " + _routingTable[i]);
+			//type cast
+			try{
+				Node node = (Node)_routingTable[i].node();
+				System.out.println("Interface " + i + " have the " + node.getAddr().networkId() + "." + node.getAddr().nodeId());
+
+			}catch(Exception e){
+				System.out.println("Interafce " + i + " is empty ");
+			}
+
 		}
 	}
 	
@@ -76,6 +95,17 @@ public class Router extends SimEnt{
 	
 	public void recv(SimEnt source, Event event)
 	{
+		//check if the event is of type "SwitchInterface
+
+		if(event instanceof SwitchInterface)
+		{
+			System.out.println("Router recv a SwitchInterface Event");
+			//call the switch interface functions with events id and interface location.
+			switchInterface(((SwitchInterface) event).getIdCurrentInterface(), ((SwitchInterface) event).getNewInterfaceNr());
+			printInterfaceTable();
+
+		}
+
 		if (event instanceof Message)
 		{
 			System.out.println("Router handles packet with seq: " + ((Message) event).seq()+" from node: "+((Message) event).source().networkId()+"." + ((Message) event).source().nodeId() );
@@ -83,6 +113,7 @@ public class Router extends SimEnt{
 			System.out.println("Router sends to node: " + ((Message) event).destination().networkId()+"." + ((Message) event).destination().nodeId());		
 			send (sendNext, event, _now);
 	
-		}	
+		}
+
 	}
 }

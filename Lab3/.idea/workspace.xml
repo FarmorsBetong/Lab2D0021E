@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="269d852b-02fc-431b-84f9-a4d746df9953" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sim/GaussNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sim/GaussNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Sim/Run.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sim/Run.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sim/CBRNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sim/CBRNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Sim/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sim/Node.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -36,7 +37,7 @@
     <option name="height" value="740" />
   </component>
   <component name="ProjectId" id="1ob96jkpCrALqd5WQ3ZzRzigG1h" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
@@ -104,6 +105,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Run" />
@@ -124,6 +136,8 @@
       <workItem from="1613403294528" duration="660000" />
       <workItem from="1613480634777" duration="3216000" />
       <workItem from="1613544255937" duration="5786000" />
+      <workItem from="1614104276295" duration="219000" />
+      <workItem from="1614104510846" duration="52000" />
     </task>
     <servers />
   </component>
