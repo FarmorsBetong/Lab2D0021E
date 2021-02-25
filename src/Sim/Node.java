@@ -62,6 +62,7 @@ public class Node extends SimEnt {
 		_toNetwork = network;
 		_toHost = node;
 		_seq = startSeq;
+		System.out.println("creates first timer event");
 		send(this, new TimerEvent(),0);	
 	}
 	
@@ -77,13 +78,14 @@ public class Node extends SimEnt {
 			{
 				_sentmsg++;
 				send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost),_seq),0);
+				System.out.println("Node creates timer event");
 				send(this, new TimerEvent(),_timeBetweenSending);
 				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 				_seq++;
 
 				if(_sentmsg == changeInterfaceAfter)
 				{
-					System.out.println("nop");
+
 					System.out.println("Switching Interface to " + newInterface);
 
 					//Creates a switchinterface event that triggers immediately.

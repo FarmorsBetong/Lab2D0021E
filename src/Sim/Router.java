@@ -50,6 +50,7 @@ public class Router extends SimEnt{
 	}
 	
 	public void switchInterface(NetworkAddr idCurrentInterface, int newInterface) {
+		System.out.println("SwitchInterface func in router executes");
 
 		// First check if the new interface spot isen't already taken
 		if(_routingTable[newInterface] != null){
@@ -97,13 +98,14 @@ public class Router extends SimEnt{
 	{
 		//check if the event is of type "SwitchInterface
 		System.out.println("--------------------------------");
-		System.out.println(event);
+		System.out.println("Router recvs the event :" + event);
 
 		if(event instanceof SwitchInterface)
 		{
 			System.out.println("Router recv a SwitchInterface Event");
 			//call the switch interface functions with events id and interface location.
 			switchInterface(((SwitchInterface) event).getIdCurrentInterface(), ((SwitchInterface) event).getNewInterfaceNr());
+			printInterfaceTable();
 
 		}
 
