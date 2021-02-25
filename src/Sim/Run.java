@@ -47,11 +47,11 @@ public class Run {
 		// Generate some traffic
 		// host1 will send 3 messages with time interval 5 to network 2, node 1. Sequence starts with number 1
 		host1.switchInterface(2,3);
-		host1.StartSending(2, 2, 9,10, 0);
+		host1.StartSending(2, 2, 5,10, 0);
 		// host2 will send 2 messages with time interval 10 to network 1, node 1. Sequence starts with number 10
 		//host2.StartSending(1, 1, 10, 10, 100);
 
-		routeNode.printInterfaceTable();
+		//routeNode.printInterfaceTable();
 		//routeNode.switchInterface(0, 2);
 		
 		//host1.StartSending(2, 2, 3, 3, 25);

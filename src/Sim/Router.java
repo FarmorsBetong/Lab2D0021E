@@ -96,13 +96,14 @@ public class Router extends SimEnt{
 	public void recv(SimEnt source, Event event)
 	{
 		//check if the event is of type "SwitchInterface
+		System.out.println("--------------------------------");
+		System.out.println(event);
 
 		if(event instanceof SwitchInterface)
 		{
 			System.out.println("Router recv a SwitchInterface Event");
 			//call the switch interface functions with events id and interface location.
 			switchInterface(((SwitchInterface) event).getIdCurrentInterface(), ((SwitchInterface) event).getNewInterfaceNr());
-			printInterfaceTable();
 
 		}
 

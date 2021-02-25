@@ -19,6 +19,7 @@ public final class SimEngine implements Runnable {
 	
 	public EventHandle register(SimEnt registrator, SimEnt target, Event event, double delayedExecution)
 	{
+		System.out.println(event);
 		double scheduleForTime = getTime() + delayedExecution;
 		EventHandle handle = new EventHandle(registrator, target, event, new SimTimeSlot(scheduleForTime));
 		_simTimeTree.put(handle._simSlot, handle);
