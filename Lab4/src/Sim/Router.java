@@ -7,9 +7,17 @@ public class Router extends SimEnt{
 	private RouteTableEntry [] _routingTable;
 	private int _interfaces;
 	private int _now=0;
+	//To identify the router
+	private int RID;
 
 	// When created, number of interfaces are defined
 	
+	Router(int interfaces, int RID)
+	{
+		this.RID = RID;
+		_routingTable = new RouteTableEntry[interfaces];
+		_interfaces=interfaces;
+	}
 	Router(int interfaces)
 	{
 		_routingTable = new RouteTableEntry[interfaces];
@@ -116,6 +124,10 @@ public class Router extends SimEnt{
 			System.out.println("Router sends to node: " + ((Message) event).destination().networkId()+"." + ((Message) event).destination().nodeId());		
 			send (sendNext, event, _now);
 	
+		}
+		if(event instanceof RequestNetworkChange){
+			// Execution of Foreign Agent when it recieves a networkchange req.
+			
 		}
 
 	}

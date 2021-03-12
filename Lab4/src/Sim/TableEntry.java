@@ -23,5 +23,9 @@ public class TableEntry {
 	{
 		return _node;
 	}
+
+	protected SimEnt getDevice(){
+		return _node;
+	}
 	
 }

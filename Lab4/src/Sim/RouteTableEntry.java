@@ -20,5 +20,7 @@ public class RouteTableEntry extends TableEntry{
 	{
 		return super.node();
 	}
-	
+	public SimEnt getDevice(){
+		return super.getDevice();
+	}
 }
