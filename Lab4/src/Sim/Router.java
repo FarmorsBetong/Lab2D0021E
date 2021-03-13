@@ -46,35 +46,36 @@ public class Router extends SimEnt{
 	// This method searches for an entry in the routing table that matches
 	// the network number in the destination field of a messages. The link
 	// represents that network number is returned
-	
-	private SimEnt getInterface(int networkAddress)
-	{
-		System.out.println("R:" + this.RID + " are sending to network "+networkAddress + "searching for the devices with that network dest.");
-		SimEnt routerInterface=null;
-		for(int i=0; i<_interfaces; i++)
-			if (_routingTable[i] != null)
-			{
-				//Takes the device inside the table, and takes its link and returns it (Node or Router)
-				SimEnt device = _routingTable[i].getDevice();
-				if(device instanceof Node){
-					if (((Node) _routingTable[i].node()).getAddr().networkId() == networkAddress)
-					{
-						routerInterface = _routingTable[i].link();
-					}
-				}
-				else if(device instanceof Router){
-					//If the device in the table is a router, and it matches to the router we are suppose to send to
-					if (((Router) device).RID == networkAddress){
-						//return the routers link towards the dest router.
-						System.out.println("vi skickar tillbaks link");
-						return _routingTable[i].link();
-					}
-				}
 
+	private SimEnt getInterface(NetworkAddr addr) {
+		SimEnt routerInterface;
+		for (int i = 0; i < _interfaces; i++)
+			if (_routingTable[i] != null) {
+
+				SimEnt dev = _routingTable[i].getDevice();
+
+				if (dev instanceof Node) {
+					Node node = (Node)dev;
+					System.out.println(node.getAddr().networkId()+":"+node.getAddr().nodeId());
+					System.out.println(node);
+
+					if (node.getAddr().networkId() == addr.networkId() && node.getAddr().nodeId() == addr.nodeId()) {
+						routerInterface = _routingTable[i].link();
+						return routerInterface;
+					}
+				} else if (dev instanceof Router) {
+					Router router = (Router)dev;
+					System.out.println(router.RID);
+
+					if (router.RID == addr.networkId()) {
+						routerInterface = _routingTable[i].link();
+						return routerInterface;
+					}
+				}
 			}
-		//No device was found
-		System.out.println("No devices was found");
-		return routerInterface;
+
+		//No link found
+		return null;
 	}
 
 	
@@ -135,7 +136,7 @@ public class Router extends SimEnt{
 	{
 		//check if the event is of type "SwitchInterface
 		System.out.println("--------------------------------");
-		System.out.println("Router recvs the event :" + event);
+		System.out.println("Router receives the event :" + event);
 
 		if(event instanceof SwitchInterface)
 		{
@@ -151,7 +152,8 @@ public class Router extends SimEnt{
 			// decompose the message
 			Message msg = (Message) event;
 			NetworkAddr msgDest = msg.destination();
-			NetworkAddr msgSource = msg.source();
+			System.out.println(msgDest);
+			System.out.println("msg dst "+msgDest.networkId()+ ":" + msgDest.nodeId());
 			//Gets the value of the pair <HoA,CoA> (dest is the home address and gives back the new address (CoA)
 			NetworkAddr CoA = this.bindings.get(msgDest);
 
@@ -164,10 +166,11 @@ public class Router extends SimEnt{
 			}
 
 			System.out.println("Router handles packet with seq: " + ((Message) event).seq()+" from node: "+((Message) event).source().networkId()+"." + ((Message) event).source().nodeId() );
-			SimEnt sendNext = getInterface(((Message) event).destination().networkId());
+			System.out.println("sends in destADDR:" + msgDest);
+			SimEnt sendNext = getInterface(msgDest);
 			// controls that their is a interface / Link to send out the msg.
 			if(sendNext == null){
-				System.out.println("\n\n\n\n\n Router :" + this.RID + " cant find dest " + msgDest + " its unreachable" );
+				System.out.println("\n\n\n\n\n Router :" + this.RID + " cant find dest " + msgDest.networkId()+":"+msgDest.nodeId() + " its unreachable" );
 			}
 			else{
 				System.out.println("Router sends to node: " + ((Message) event).destination().networkId()+"." + ((Message) event).destination().nodeId());
@@ -201,7 +204,7 @@ public class Router extends SimEnt{
 			System.out.println("Node:" + MN._id.networkId() + ":" + MN._id.nodeId() + " migrates to the new network:" + FA.RID);
 
 			NetworkAddr CoA = new NetworkAddr(FA.RID,nextAvailableInterface);
-			MN._id = CoA;
+			//MN._id = CoA;
 
 			System.out.println("MN with adress :" + HoA.networkId() + ":" + HoA.nodeId() + " got the CoA :" + CoA.networkId() + ":" + CoA.nodeId());
 
@@ -211,6 +214,7 @@ public class Router extends SimEnt{
 			// Connects the MN to the FA with the available interface address
 			FA.connectInterface(nextAvailableInterface,l,MN);
 			Router HA = request.getHomeAgent();
+			System.out.println(HoA);
 			HA.bindings.put(HoA,CoA);
 			System.out.println("Router " + HA.RID + " binded the home address : " + HoA.networkId() + ":" + HoA.nodeId() +
 					" to the CoA:" + CoA.networkId() + ":" + CoA.nodeId());

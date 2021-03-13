@@ -22,7 +22,9 @@ public final class SimEngine implements Runnable {
 		if(event instanceof Message){
 			System.out.println("\n\n\nRegistor()");
 			System.out.println("The target is :" + target);
-			System.out.println("Msg has dest of network id :" + ((Message) event).destination().networkId());
+			if(event instanceof Message){
+				System.out.println("Msg has dest of network id :" + ((Message) event).destination().networkId());
+			}
 			System.out.println("\n\n\n");
 		}
 		double scheduleForTime = getTime() + delayedExecution;
