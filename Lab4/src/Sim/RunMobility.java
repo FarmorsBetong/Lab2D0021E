@@ -51,11 +51,11 @@ public class RunMobility {
 
         // Generate some traffic
 
-        host1.StartSending(2, 1, 5,10, 0);
+        host1.StartSending(1, 3, 5,10, 0);
 
 
         // node 3 wants to switch to router 2 since it has better connection after a delay of 40MS
-        host3.send(R2,new RequestNetworkChange(R1),40);
+        host3.send(R2,new RequestNetworkChange(R1),30);
 
         // Start the simulation engine and of we go!
         Thread t=new Thread(SimEngine.instance());
