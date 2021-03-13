@@ -10,8 +10,7 @@ public class Router extends SimEnt{
 	//To identify the router
 	private int RID;
 
-	// When created, number of interfaces are defined
-	
+	// When created, number of interfaces are defined and router ID
 	Router(int interfaces, int RID)
 	{
 		this.RID = RID;
@@ -45,17 +44,34 @@ public class Router extends SimEnt{
 	
 	private SimEnt getInterface(int networkAddress)
 	{
+		System.out.println("we got the interface nr : " + networkAddress);
+		System.out.println("We are in router :" + this.RID + " and trying to look for something connected to network 2");
 		SimEnt routerInterface=null;
 		for(int i=0; i<_interfaces; i++)
 			if (_routingTable[i] != null)
 			{
-				if (((Node) _routingTable[i].node()).getAddr().networkId() == networkAddress)
-				{
-					routerInterface = _routingTable[i].link();
+				//Takes the device inside the table, and takes its link and returns it (Node or Router)
+				SimEnt device = _routingTable[i].getDevice();
+				if(device instanceof Node){
+					if (((Node) _routingTable[i].node()).getAddr().networkId() == networkAddress)
+					{
+						routerInterface = _routingTable[i].link();
+					}
 				}
+				else if(device instanceof Router){
+					//If the device in the table is a router, and it matches to the router we are suppose to send to
+					if (((Router) device).RID == networkAddress){
+						//return the routers link towards the dest router.
+						System.out.println("vi skickar tillbaks link");
+						return _routingTable[i].link();
+					}
+				}
+
 			}
+		//No device was found
 		return routerInterface;
 	}
+
 	
 	public void switchInterface(NetworkAddr idCurrentInterface, int newInterface) {
 		System.out.println("SwitchInterface func in router executes");
@@ -79,7 +95,6 @@ public class Router extends SimEnt{
 					System.out.println("Null pointer ouch");
 					continue;
 				}
-
 			}
 		}
 	}
@@ -95,8 +110,17 @@ public class Router extends SimEnt{
 			}catch(Exception e){
 				System.out.println("Interafce " + i + " is empty ");
 			}
-
 		}
+	}
+	// prtocol, if this method returns -1 == no available interface
+	public int getNextAvailableInterface() {
+		for (int i = 0; i < _interfaces; i++ ){
+			if(_routingTable[i] == null){
+				return i;
+			}
+		}
+		System.out.println("No available interface on router : " + this.RID);
+		return -1;
 	}
 	
 	
@@ -127,7 +151,10 @@ public class Router extends SimEnt{
 		}
 		if(event instanceof RequestNetworkChange){
 			// Execution of Foreign Agent when it recieves a networkchange req.
-			
+			//Mobile node
+			Node MN = (Node) source;
+			System.out.println("\n\n\n\n\n");
+			System.out.println("This is MN network addr: " + MN.getAddr().networkId() + "  and this is ID :" + MN.getAddr().nodeId());
 		}
 
 	}

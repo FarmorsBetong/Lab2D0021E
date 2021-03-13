@@ -12,6 +12,7 @@ public class RunMobility {
         Link link2 = new Link();
         Link link3 = new Link();
         Link link4 = new Link();
+        Link routerLink = new Link();
 
 
 
@@ -32,17 +33,25 @@ public class RunMobility {
         // the host connected to the other
         // side of the link is also provided
         // Note. A switch is created in same way using the Switch class
-        Router R1 = new Router(3,1);
-        Router R2 = new Router(3,2);
-        R1.connectInterface(0, host1._peer, host1);
-        R1.connectInterface(1,host2._peer,host2);
-        R1.connectInterface(3,host3._peer,host3);
-        R2.connectInterface(1,host4._peer,host4);
+        Router R1 = new Router(5,1);
+        Router R2 = new Router(5,2);
+
+        //Wire up routers
+
+        // 3 nodes + R2 connected to R1
+        R1.connectInterface(0, link1, host1);
+        R1.connectInterface(1,link2,host2);
+        R1.connectInterface(2,link3,host3);
+        R1.connectInterface(3,routerLink,R2);
+
+        // 1 Node + 1 R1 connected to R2
+        R2.connectInterface(0,routerLink,R1);
+        R2.connectInterface(2,link4,host4);
 
 
         // Generate some traffic
 
-        host1.StartSending(2, 2, 5,10, 0);
+        host1.StartSending(2, 1, 5,10, 0);
 
 
         // node 3 wants to switch to router 2 since it has better connection after a delay of 40MS
