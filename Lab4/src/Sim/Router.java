@@ -57,7 +57,7 @@ public class Router extends SimEnt{
 				if (dev instanceof Node) {
 					Node node = (Node)dev;
 					System.out.println(node.getAddr().networkId()+":"+node.getAddr().nodeId());
-					System.out.println(node);
+					System.out.println(node.getAddr());
 
 					if (node.getAddr().networkId() == addr.networkId() && node.getAddr().nodeId() == addr.nodeId()) {
 						routerInterface = _routingTable[i].link();
@@ -192,21 +192,24 @@ public class Router extends SimEnt{
 
 			//Get the HoA of the Mobile node
 			NetworkAddr HoA = MN._id;
+			System.out.println(HoA);
 
 			//Set the care of address
+			//returns an int value of the position in the interface table spot that is not occupied
 			int nextAvailableInterface = getNextAvailableInterface();
+
 			if(nextAvailableInterface == -1){
 				System.out.println("\n\n\n This router does not have any available interfaces for your CoA!");
 				return;
 			}
 
 			//Prints preperation of migraion from one network to another
-			System.out.println("Node:" + MN._id.networkId() + ":" + MN._id.nodeId() + " migrates to the new network:" + FA.RID);
+			System.out.println("Node " + MN._id.networkId() + ":" + MN._id.nodeId() + " migrates to the new network: " + FA.RID);
 
 			NetworkAddr CoA = new NetworkAddr(FA.RID,nextAvailableInterface);
-			//MN._id = CoA;
+			MN._id = CoA;
 
-			System.out.println("MN with adress :" + HoA.networkId() + ":" + HoA.nodeId() + " got the CoA :" + CoA.networkId() + ":" + CoA.nodeId());
+			System.out.println("MN with " + HoA.networkId() + ":" + HoA.nodeId() + " got the CoA " + CoA.networkId() + ":" + CoA.nodeId());
 
 			//generates a new link for the connection between FA and MN
 			Link l = new Link();
@@ -214,7 +217,9 @@ public class Router extends SimEnt{
 			// Connects the MN to the FA with the available interface address
 			FA.connectInterface(nextAvailableInterface,l,MN);
 			Router HA = request.getHomeAgent();
-			System.out.println(HoA);
+
+			System.out.println(CoA);
+			//Stores the NetWorkAddr inside HomeAgent with key HoA addr and value new Addr (CoA)
 			HA.bindings.put(HoA,CoA);
 			System.out.println("Router " + HA.RID + " binded the home address : " + HoA.networkId() + ":" + HoA.nodeId() +
 					" to the CoA:" + CoA.networkId() + ":" + CoA.nodeId());

@@ -51,7 +51,7 @@ public class RunMobility {
 
         // Generate some traffic
 
-        host1.StartSending(1, 3, 5,10, 0);
+        host1.StartSending(host3.getAddr(), 5,10, 0);
 
 
         // node 3 wants to switch to router 2 since it has better connection after a delay of 40MS

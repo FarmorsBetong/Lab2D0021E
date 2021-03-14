@@ -48,21 +48,31 @@ public class Node extends SimEnt {
 	protected int _timeBetweenSending = 10; //time between messages
 	protected int _toNetwork = 0;
 	protected int _toHost = 0;
+	protected NetworkAddr destination;
 
 	// changeInterfaceAfter holds the number of packets needs to be sent before a interface switch
 	// changeInterfaceTo holds the interface we are going to switch to.
 	protected int changeInterfaceAfter;
 	protected int newInterface;
 	
-	public void StartSending(int network, int node, int number, int timeInterval, int startSeq)
+	public void StartSending(NetworkAddr dest, int number, int timeInterval, int startSeq)
+	{
+		_stopSendingAfter = number;
+		_timeBetweenSending = timeInterval;
+		destination = dest;
+		_seq = startSeq;
+		System.out.println("creates first timer event");
+		send(this, new TimerEvent(),0);	
+	}
+	public void StartSending(int network, int host, int number, int timeInterval, int startSeq)
 	{
 		_stopSendingAfter = number;
 		_timeBetweenSending = timeInterval;
 		_toNetwork = network;
-		_toHost = node;
+		_toHost = host;
 		_seq = startSeq;
 		System.out.println("creates first timer event");
-		send(this, new TimerEvent(),0);	
+		send(this, new TimerEvent(),0);
 	}
 	
 //**********************************************************************************	
@@ -76,7 +86,8 @@ public class Node extends SimEnt {
 			if (_stopSendingAfter > _sentmsg)
 			{
 				_sentmsg++;
-				send(_peer, new Message(_id, new NetworkAddr(_toNetwork, _toHost),_seq),0);
+				System.out.println("Node creates msg event");
+				send(_peer, new Message(_id, destination,_seq),0);
 				System.out.println("Node creates timer event");
 				send(this, new TimerEvent(),_timeBetweenSending);
 				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
