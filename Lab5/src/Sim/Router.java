@@ -3,6 +3,7 @@ package Sim;
 // This class implements a simple router
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Router extends SimEnt{
 
@@ -13,6 +14,7 @@ public class Router extends SimEnt{
 	private int RID;
 	//Binds the CoA to the HoA using hashmap class, <HoA,CoA>
 	HashMap<NetworkAddr,NetworkAddr> bindings;
+	LinkedList<Message> buffer = new LinkedList<>();
 
 	// When created, number of interfaces are defined and router ID
 	Router(int interfaces, int RID)
@@ -71,6 +73,30 @@ public class Router extends SimEnt{
 						routerInterface = _routingTable[i].link();
 						return routerInterface;
 					}
+				}
+			}
+
+		//No link found
+		return null;
+	}
+	private Node getNode(NetworkAddr addr) {
+		Node routerNode = null;
+		for (int i = 0; i < _interfaces; i++)
+			if (_routingTable[i] != null) {
+
+				SimEnt dev = _routingTable[i].getDevice();
+
+				if (dev instanceof Node) {
+					Node node = (Node)dev;
+					System.out.println(node.getAddr().networkId()+":"+node.getAddr().nodeId());
+					System.out.println(node.getAddr());
+
+					if (node.getAddr().networkId() == addr.networkId() && node.getAddr().nodeId() == addr.nodeId()) {
+						routerNode = (Node)_routingTable[i].node();
+						return routerNode;
+					}
+				} else if (dev instanceof Router) {
+					continue;
 				}
 			}
 
@@ -152,32 +178,44 @@ public class Router extends SimEnt{
 			// decompose the message
 			Message msg = (Message) event;
 			NetworkAddr msgDest = msg.destination();
-			System.out.println(msgDest);
+			//System.out.println(msgDest);
 			System.out.println("msg dst "+msgDest.networkId()+ ":" + msgDest.nodeId());
 			//Gets the value of the pair <HoA,CoA> (dest is the home address and gives back the new address (CoA)
 			NetworkAddr CoA = this.bindings.get(msgDest);
 
+
+			//System.out.println(source);
 			//if the router have a binding with another address, change the msg to that destination
 			if(CoA != null){
-				System.out.println("Tunneling the msg from :" + msgDest.networkId()+":"+msgDest.nodeId()+ " to "+
-						CoA.networkId()+":"+ CoA.nodeId());
 				msgDest = CoA;
 				msg.setNewDestination(CoA);
+				System.out.println("Tunneling the msg from :" + msgDest.networkId()+":"+msgDest.nodeId()+ " to "+
+						CoA.networkId()+":"+ CoA.nodeId());
 			}
 
+
 			System.out.println("Router handles packet with seq: " + ((Message) event).seq()+" from node: "+((Message) event).source().networkId()+"." + ((Message) event).source().nodeId() );
-			System.out.println("sends in destADDR:" + msgDest);
+
+			//Gets sending node in router table
+			Node destinationNode = getNode(msgDest);
 			SimEnt sendNext = getInterface(msgDest);
 			// controls that their is a interface / Link to send out the msg.
 			if(sendNext == null){
 				System.out.println("\n\n\n\n\n Router :" + this.RID + " cant find dest " + msgDest.networkId()+":"+msgDest.nodeId() + " its unreachable" );
 			}
 			else{
-				System.out.println("Router sends to node: " + ((Message) event).destination().networkId()+"." + ((Message) event).destination().nodeId());
-				send (sendNext, event, _now);
+				//If the router finds the destination, we check if the node is ready to recieve the messages.
+				// If not we store the messages in a linked list
+				if(destinationNode.getMigrate()){
+					System.out.println("Buffering upp a message in Router " + this.RID);
+					buffer.add(msg);
+
+				}else{
+					System.out.println("Router sends to node: " + ((Message) event).destination().networkId()+"." + ((Message) event).destination().nodeId());
+					send (sendNext, event, _now);
+				}
 			}
 
-	
 		}
 		if(event instanceof RequestNetworkChange){
 			// Execution of Foreign Agent when it recieves a networkchange req.
@@ -192,7 +230,7 @@ public class Router extends SimEnt{
 
 			//Get the HoA of the Mobile node
 			NetworkAddr HoA = MN._id;
-			System.out.println(HoA);
+
 
 			//Set the care of address
 			//returns an int value of the position in the interface table spot that is not occupied
@@ -218,11 +256,33 @@ public class Router extends SimEnt{
 			FA.connectInterface(nextAvailableInterface,l,MN);
 			Router HA = request.getHomeAgent();
 
-			System.out.println(CoA);
 			//Stores the NetWorkAddr inside HomeAgent with key HoA addr and value new Addr (CoA)
 			HA.bindings.put(HoA,CoA);
 			System.out.println("Router " + HA.RID + " binded the home address : " + HoA.networkId() + ":" + HoA.nodeId() +
 					" to the CoA:" + CoA.networkId() + ":" + CoA.nodeId());
+
+			// ----------------- Migrating  timer created --------------------
+
+			System.out.println("Migration started, time before migration is over: " + request.getTime());
+			MN.setMigrating(true);
+			//Sends a migrating event to the mobile node whos migrating
+			send(MN,new MigrateEvent(MN,HA),request.getTime());
+		}
+
+		if(event instanceof MigrateComplete){
+			MigrateComplete ev = (MigrateComplete) event;
+
+			//MN
+			NetworkAddr destinationAddr = ev.node;
+			//Get the link to the mobile node
+			SimEnt sendNext = getInterface(destinationAddr);
+			//Go through the buffer and send the messages
+			for(int i = 0; i < buffer.size(); i++){
+				Message ev = buffer.remove();
+				System.out.println("Sending buffed msg nr:" + i+1);
+				System.out.println("Router sends to node: " + (ev.destination().networkId()+"." + (ev.destination().nodeId());
+				send (sendNext, ev, _now);
+			}
 		}
 
 	}

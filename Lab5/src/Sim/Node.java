@@ -9,14 +9,22 @@ public class Node extends SimEnt {
 	protected SimEnt _peer;
 	protected int _sentmsg=0;
 	protected int _seq = 0;
+	protected boolean migrating;
 
 	
 	public Node (int network, int node)
 	{
 		super();
 		_id = new NetworkAddr(network, node);
+		this.migrating = false;
 	}	
-	
+
+	public boolean getMigrate(){
+		return this.migrating;
+	}
+	public void setMigrating(boolean value){
+		this.migrating = value;
+	}
 	
 	// Sets the peer to communicate with. This node is single homed
 	
@@ -108,6 +116,14 @@ public class Node extends SimEnt {
 		{
 			System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" receives message with seq: "+((Message) ev).seq() + " at time "+SimEngine.getTime());
 			
+		}
+		if (ev instanceof MigrateEvent){
+			MigrateEvent event = (MigrateEvent)ev;
+			System.out.println("Node got a migrate event");
+			System.out.println("Setting migrate flag to true");
+			this.setMigrating(true);
+			//send (dest,ev,timer)
+			send(event.homeAgent,new MigrateComplete(event.mobileNode._id),0);
 		}
 	}
 }

@@ -55,7 +55,7 @@ public class RunMobility {
 
 
         // node 3 wants to switch to router 2 since it has better connection after a delay of 40MS
-        host3.send(R2,new RequestNetworkChange(R1),30);
+        host3.send(R2,new RequestNetworkChange(R1,30),30);
 
         // Start the simulation engine and of we go!
         Thread t=new Thread(SimEngine.instance());
