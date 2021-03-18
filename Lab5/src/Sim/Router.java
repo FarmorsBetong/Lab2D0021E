@@ -278,13 +278,14 @@ public class Router extends SimEnt{
 			SimEnt sendNext = getInterface(destinationAddr);
 			//Go through the buffer and send the messages
 			System.out.println("Buffer size is " + buffer.size());
-			for(int i = 0; i < buffer.size(); i++){
-				System.out.println("Hur många gånger körs denna");
-				Message msg = buffer.remove();
-				System.out.println("Sending buffed msg nr:" + i+1);
+			while(true){
+				Message msg = buffer.pollFirst();
+				if(msg == null){
+					break;
+				}
+				System.out.println("Sending buffed msg " + msg.seq());
 				System.out.println("Router sends to node: " + msg.destination().networkId()+"." + msg.destination().nodeId());
 				send (sendNext, msg, _now);
-				System.out.println("vi kommer aldrig hit");
 			}
 		}
 
