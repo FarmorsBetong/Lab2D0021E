@@ -48,6 +48,12 @@ public class RunMobility {
         R2.connectInterface(0,routerLink,R1);
         R2.connectInterface(2,link4,host4);
 
+        System.out.println("Start by printing each router tables");
+        System.out.println("R1 table:");
+        R1.printInterfaceTable();
+        System.out.println("\nR2 table:");
+        R2.printInterfaceTable();
+        System.out.println("");
 
         // Generate some traffic
 

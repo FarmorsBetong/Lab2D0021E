@@ -20,10 +20,10 @@ public final class SimEngine implements Runnable {
 	public EventHandle register(SimEnt registrator, SimEnt target, Event event, double delayedExecution)
 	{
 		if(event instanceof Message){
-			System.out.println("\n\n\nRegistor()");
+			System.out.println("\nRegistor()");
 			System.out.println("The target is :" + target);
 			if(event instanceof Message){
-				System.out.println("Msg has dest of network id :" + ((Message) event).destination().networkId());
+				System.out.println("Msg has destination of network id : " + ((Message) event).destination().networkId());
 			}
 			System.out.println("\n\n\n");
 		}
@@ -97,7 +97,7 @@ public final class SimEngine implements Runnable {
 				handleToNextEvent = (EventHandle) _simTimeTree.get(nextEventToExecute);
 				_simTime=nextEventToExecute._msek;
 				handleToNextEvent._event.entering(handleToNextEvent._target);
-				System.out.println("Engine target: "+ handleToNextEvent._target);
+				//System.out.println("Engine target: "+ handleToNextEvent._target);
 				handleToNextEvent._target.recv(handleToNextEvent._registrator, handleToNextEvent._event);
 				deregister(handleToNextEvent);
 			}

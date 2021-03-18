@@ -69,7 +69,6 @@ public class Node extends SimEnt {
 		_timeBetweenSending = timeInterval;
 		destination = dest;
 		_seq = startSeq;
-		System.out.println("creates first timer event");
 		send(this, new TimerEvent(),0);	
 	}
 	public void StartSending(int network, int host, int number, int timeInterval, int startSeq)
@@ -79,7 +78,6 @@ public class Node extends SimEnt {
 		_toNetwork = network;
 		_toHost = host;
 		_seq = startSeq;
-		System.out.println("creates first timer event");
 		send(this, new TimerEvent(),0);
 	}
 	
@@ -94,9 +92,7 @@ public class Node extends SimEnt {
 			if (_stopSendingAfter > _sentmsg)
 			{
 				_sentmsg++;
-				System.out.println("Node creates msg event");
 				send(_peer, new Message(_id, destination,_seq),0);
-				System.out.println("Node creates timer event");
 				send(this, new TimerEvent(),_timeBetweenSending);
 				System.out.println("Node "+_id.networkId()+ "." + _id.nodeId() +" sent message with seq: "+_seq + " at time "+SimEngine.getTime());
 				_seq++;

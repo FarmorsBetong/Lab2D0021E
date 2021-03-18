@@ -51,21 +51,27 @@ public class Router extends SimEnt{
 
 	private SimEnt getInterface(NetworkAddr addr) {
 		SimEnt routerInterface;
+
+		//Go through the router table
 		for (int i = 0; i < _interfaces; i++)
 			if (_routingTable[i] != null) {
 
 				SimEnt dev = _routingTable[i].getDevice();
 
+				//if the entity is a node
 				if (dev instanceof Node) {
 					Node node = (Node)dev;
-					System.out.println(node.getAddr().networkId()+":"+node.getAddr().nodeId());
-					System.out.println(node.getAddr());
+					//System.out.println(node.getAddr().networkId()+":"+node.getAddr().nodeId());
+					//System.out.println(node.getAddr());
 
 					if (node.getAddr().networkId() == addr.networkId() && node.getAddr().nodeId() == addr.nodeId()) {
 						routerInterface = _routingTable[i].link();
 						return routerInterface;
 					}
-				} else if (dev instanceof Router) {
+
+				}
+				//if instance of router
+				else if (dev instanceof Router) {
 					Router router = (Router)dev;
 					System.out.println(router.RID);
 
@@ -75,12 +81,12 @@ public class Router extends SimEnt{
 					}
 				}
 			}
-
+		System.out.println("No link was found\n");
 		//No link found
 		return null;
 	}
 	private Node getNode(NetworkAddr addr) {
-		Node routerNode = null;
+		Node routerNode;
 		for (int i = 0; i < _interfaces; i++)
 			if (_routingTable[i] != null) {
 
@@ -88,8 +94,9 @@ public class Router extends SimEnt{
 
 				if (dev instanceof Node) {
 					Node node = (Node)dev;
-					System.out.println(node.getAddr().networkId()+":"+node.getAddr().nodeId());
-					System.out.println(node.getAddr());
+					//System.out.println(node.getAddr().networkId()+":"+node.getAddr().nodeId());
+					//System.out.println(node.getAddr());
+
 
 					if (node.getAddr().networkId() == addr.networkId() && node.getAddr().nodeId() == addr.nodeId()) {
 						routerNode = (Node)_routingTable[i].node();
@@ -134,12 +141,17 @@ public class Router extends SimEnt{
 	//prints out the table of interfaces when an changeInterface event has occurred
 	public void printInterfaceTable(){
 		for(int i = 0; i < _interfaces; i++){
-			//type cast
-			try{
-				Node node = (Node)_routingTable[i].node();
-				System.out.println("Interface " + i + " have the " + node.getAddr().networkId() + "." + node.getAddr().nodeId());
-
-			}catch(Exception e){
+			try {
+				SimEnt device = _routingTable[i].getDevice();
+				if(device instanceof Node){
+					Node node = (Node)device;
+					System.out.println("Interface " + i + " holds a node with address: " + node.getAddr().networkId() + "." + node.getAddr().nodeId());
+				}
+				else if(device instanceof Router){
+					Router r = (Router)device;
+					System.out.println("Interaface " + i + " holds the link to router "+ r.RID);
+				}
+			}catch (NullPointerException e){
 				System.out.println("Interafce " + i + " is empty ");
 			}
 		}
@@ -177,20 +189,21 @@ public class Router extends SimEnt{
 		{
 			// decompose the message
 			Message msg = (Message) event;
+			//msg destination
 			NetworkAddr msgDest = msg.destination();
-			//System.out.println(msgDest);
 			System.out.println("msg dst "+msgDest.networkId()+ ":" + msgDest.nodeId());
+
 			//Gets the value of the pair <HoA,CoA> (dest is the home address and gives back the new address (CoA)
 			NetworkAddr CoA = this.bindings.get(msgDest);
 
 
-			//System.out.println(source);
+
 			//if the router have a binding with another address, change the msg to that destination
 			if(CoA != null){
+				System.out.println("Tunneling the msg from " + msgDest.networkId()+":"+msgDest.nodeId()+ " to "+
+						CoA.networkId()+":"+ CoA.nodeId());
 				msgDest = CoA;
 				msg.setNewDestination(CoA);
-				System.out.println("Tunneling the msg from :" + msgDest.networkId()+":"+msgDest.nodeId()+ " to "+
-						CoA.networkId()+":"+ CoA.nodeId());
 			}
 
 
@@ -254,6 +267,9 @@ public class Router extends SimEnt{
 
 			// Connects the MN to the FA with the available interface address
 			FA.connectInterface(nextAvailableInterface,l,MN);
+			System.out.println("Router " + this.RID + " table was updated, new table is : \n");
+			this.printInterfaceTable();
+			System.out.println("");
 			Router HA = request.getHomeAgent();
 
 			//Stores the NetWorkAddr inside HomeAgent with key HoA addr and value new Addr (CoA)
