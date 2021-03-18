@@ -277,11 +277,14 @@ public class Router extends SimEnt{
 			//Get the link to the mobile node
 			SimEnt sendNext = getInterface(destinationAddr);
 			//Go through the buffer and send the messages
+			System.out.println("Buffer size is " + buffer.size());
 			for(int i = 0; i < buffer.size(); i++){
-				Message ev = buffer.remove();
+				System.out.println("Hur många gånger körs denna");
+				Message msg = buffer.remove();
 				System.out.println("Sending buffed msg nr:" + i+1);
-				System.out.println("Router sends to node: " + (ev.destination().networkId()+"." + (ev.destination().nodeId());
-				send (sendNext, ev, _now);
+				System.out.println("Router sends to node: " + msg.destination().networkId()+"." + msg.destination().nodeId());
+				send (sendNext, msg, _now);
+				System.out.println("vi kommer aldrig hit");
 			}
 		}
 
