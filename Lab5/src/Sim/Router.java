@@ -211,6 +211,8 @@ public class Router extends SimEnt{
 
 			//Gets sending node in router table
 			Node destinationNode = getNode(msgDest);
+			//System.out.println(destinationNode._id.networkId() + ":" + destinationNode._id.nodeId());
+			//System.out.println("The flag value : " + destinationNode.getMigrate());
 			SimEnt sendNext = getInterface(msgDest);
 			// controls that their is a interface / Link to send out the msg.
 			if(sendNext == null){
@@ -287,9 +289,14 @@ public class Router extends SimEnt{
 
 		if(event instanceof MigrateComplete){
 			MigrateComplete ev = (MigrateComplete) event;
-
-			//MN
+			//MN address
 			NetworkAddr destinationAddr = ev.node;
+
+			//get the node with the address
+			Node MN = getNode(destinationAddr);
+
+			//Set the flag to flase
+			MN.setMigrating(false);
 			//Get the link to the mobile node
 			SimEnt sendNext = getInterface(destinationAddr);
 			//Go through the buffer and send the messages
@@ -299,7 +306,7 @@ public class Router extends SimEnt{
 				if(msg == null){
 					break;
 				}
-				System.out.println("Sending buffed msg " + msg.seq());
+				System.out.println("Sending buffed msg with seq number: " + msg.seq());
 				System.out.println("Router sends to node: " + msg.destination().networkId()+"." + msg.destination().nodeId());
 				send (sendNext, msg, _now);
 			}
