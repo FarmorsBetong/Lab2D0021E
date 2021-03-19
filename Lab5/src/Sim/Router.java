@@ -211,8 +211,6 @@ public class Router extends SimEnt{
 
 			//Gets sending node in router table
 			Node destinationNode = getNode(msgDest);
-			//System.out.println(destinationNode._id.networkId() + ":" + destinationNode._id.nodeId());
-			//System.out.println("The flag value : " + destinationNode.getMigrate());
 			SimEnt sendNext = getInterface(msgDest);
 			// controls that their is a interface / Link to send out the msg.
 			if(sendNext == null){
@@ -222,8 +220,8 @@ public class Router extends SimEnt{
 				//If the router finds the destination, we check if the node is ready to recieve the messages.
 				// If not we store the messages in a linked list
 				if(destinationNode.getMigrate()){
-					System.out.println("Buffering upp a message in Router " + this.RID);
 					buffer.add(msg);
+					System.out.println("Buffering upp a message in Router " + this.RID + " buffersize: "+ buffer.size());
 
 				}else{
 					System.out.println("Router sends to node: " + ((Message) event).destination().networkId()+"." + ((Message) event).destination().nodeId());
@@ -257,12 +255,12 @@ public class Router extends SimEnt{
 			}
 
 			//Prints preperation of migraion from one network to another
-			System.out.println("Node " + MN._id.networkId() + ":" + MN._id.nodeId() + " migrates to the new network: " + FA.RID);
+			System.out.println("Setting up for Node " + MN._id.networkId() + ":" + MN._id.nodeId() + " for migratetion to the new network: " + FA.RID);
 
 			NetworkAddr CoA = new NetworkAddr(FA.RID,nextAvailableInterface);
 			MN._id = CoA;
 
-			System.out.println("MN with " + HoA.networkId() + ":" + HoA.nodeId() + " got the CoA " + CoA.networkId() + ":" + CoA.nodeId());
+			System.out.println("MN with " + HoA.networkId() + ":" + HoA.nodeId() + " will get CoA " + CoA.networkId() + ":" + CoA.nodeId());
 
 			//generates a new link for the connection between FA and MN
 			Link l = new Link();
@@ -281,24 +279,21 @@ public class Router extends SimEnt{
 
 			// ----------------- Migrating  timer created --------------------
 
-			System.out.println("Migration started, time before migration is over: " + request.getTime());
-			MN.setMigrating(true);
+
 			//Sends a migrating event to the mobile node whos migrating
-			send(MN,new MigrateEvent(MN,HA),request.getTime());
+			send(MN,new MigrateEvent(MN,HA,request.getTime()),0);
 		}
 
 		if(event instanceof MigrateComplete){
 			MigrateComplete ev = (MigrateComplete) event;
-			//MN address
-			NetworkAddr destinationAddr = ev.node;
+			//MN mobile node
+			Node MN= ev.node;
 
-			//get the node with the address
-			Node MN = getNode(destinationAddr);
 
 			//Set the flag to flase
 			MN.setMigrating(false);
 			//Get the link to the mobile node
-			SimEnt sendNext = getInterface(destinationAddr);
+			SimEnt sendNext = getInterface(MN._id);
 			//Go through the buffer and send the messages
 			System.out.println("Buffer size is " + buffer.size());
 			while(true){

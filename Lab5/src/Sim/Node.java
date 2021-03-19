@@ -114,12 +114,14 @@ public class Node extends SimEnt {
 			
 		}
 		if (ev instanceof MigrateEvent){
+
 			MigrateEvent event = (MigrateEvent)ev;
-			System.out.println("Node got a migrate event");
+
+			System.out.println("Migration started, time before migration is over: " + event.getHandoffTime());
 			System.out.println("Setting migrate flag to true");
 			this.setMigrating(true);
 			//send (dest,ev,timer)
-			send(event.homeAgent,new MigrateComplete(event.mobileNode._id),0);
+			send(event.homeAgent,new MigrateComplete(event.mobileNode,event.homeAgent),event.handoffTime);
 		}
 	}
 }

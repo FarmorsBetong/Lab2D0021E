@@ -3,9 +3,11 @@ package Sim;
 public class MigrateEvent implements Event {
     Node mobileNode;
     Router homeAgent;
-    public MigrateEvent(Node MN, Router homeAgent){
+    int handoffTime;
+    public MigrateEvent(Node MN, Router homeAgent, int handoffTime){
         this.mobileNode = MN;
         this.homeAgent = homeAgent;
+        this.handoffTime = handoffTime;
     }
 
     public Router getHomeAgent(){
@@ -15,6 +17,9 @@ public class MigrateEvent implements Event {
         return mobileNode;
     }
 
+    public int getHandoffTime(){
+        return handoffTime;
+    }
     @Override
     public void entering(SimEnt locale) {
 
